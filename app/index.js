@@ -1,6 +1,7 @@
 let client
 let info
 let id
+let points = 50
 
 function setup(){
     let params = getURLParams()
