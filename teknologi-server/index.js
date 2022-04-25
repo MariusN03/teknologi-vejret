@@ -1,17 +1,41 @@
 var axios = require('axios');
 const mqtt = require('mqtt');
 var dayAgo = 0
-const day =  new Date()
+let hur
+let status = 0
+let day =  new Date()
+let today = day.getDate() + 1
+let month = day.getMonth() + 1
+let year = day.getFullYear()
+if(today < 10){
+  today = "0"+today
+}
+if(month < 10){
+  month = "0"+month
+}
+
+
 let hourd = day.getHours()
-let hour = 24 - hourd
+let oldHour = hourd
+if(day.getHours() < 10){
+  hur = "0" + day.getHours()
+}
+let hour = 24 - day.getHours()
+// let hour = 6
 let anbefaling
 console.log(hour)
 
-let clients = [];
-
-var data = JSON.stringify({
+let clients = [{
+  "id": "42069",
+  "points": 10
+},];
+var data
+const dataFetch = () => {
+data = JSON.stringify({
   "query": "query Dataset {forecasts_hour(where: {PriceArea: {_eq: \"DK2\"}} order_by: {HourUTC: desc} limit: 72 offset: " + dayAgo * 72 + "){HourUTC HourDK PriceArea ForecastType ForecastDayAhead ForecastIntraday Forecast5Hour Forecast1Hour ForecastCurrent TimestampUTC TimestampDK }}"
 });
+
+
 
 var config = {
   method: 'post',
@@ -27,6 +51,16 @@ var config = {
 axios(config)
 .then(function (response) {
     //response.data.data.forecasts_hour.map(o => console.log(o))
+    console.log(response.data.data.forecasts_hour[0])
+    if("'" + year + "-" + month + "-" + today + "T" + hur + ":00:00'" == response.data.data.forecasts_hour[(hour*3)-1].HourDK){
+      dayAgo = 1
+      status = 0
+      console.log("resetting")
+    }else{
+      dayAgo = 0
+      status = 1
+    }
+    console.log(response.data.data.forecasts_hour[(hour*3)-1].HourDK)
     let sumval = 0
     for (var i = 0; i<71; i++){
       
@@ -44,6 +78,14 @@ axios(config)
     }
     console.log("klokken "+ (24 - hour) + ": " + sumhour)
     let afvig = (sumhour-snit)/snit*100
+    console.log("lort" + (24-hour))
+    
+    if(17 <= (24-hour) && (24-hour) <= 20){
+      afvig = afvig - 100
+    }
+    if(0 <= (24-hour) && (24-hour) <= 6){
+      afvig = afvig + 230
+    }
 
     console.log("afvigelse: " +afvig)
     
@@ -61,13 +103,11 @@ axios(config)
   console.log(error);
 });
 
+}
+dataFetch()
+
 
 const client = mqtt.connect('wss://mqtt.nextservices.dk')
-
-
-  
-  
-
 
 client.on('connect', function () {
     console.log('connected')
@@ -76,8 +116,9 @@ client.on('connect', function () {
       let besked = Math.round(anbefaling)
       
       console.log("besked: " + besked)
-    client.publish('anbefaling',String(besked))
-    }, 500);
+      client.publish('anbefaling',String(besked))
+    }, 1500);
+    
 })
 
 
@@ -106,3 +147,38 @@ client.on('message', function (topic, message) {
 })
 
 
+
+setTimeout(() => {
+  setInterval(() => {
+    if(status==0){
+      dataFetch()
+      console.log('reset')
+    }else if(status==1){
+      // console.log('finished')
+    }
+    status=1
+
+    // hourd = day.getMinutes()
+  }, 1000);
+}, 1500);
+
+setInterval(() => {
+  if(oldHour != hourd){
+    dataFetch()
+  
+    setTimeout(() => {
+      let besked = Math.round(anbefaling)
+      
+      console.log("besked: " + besked)
+      client.publish('anbefaling',String(besked))
+    }, 1500);
+    day = new Date()
+    hourd = day.getHours()
+    oldHour = hourd
+
+  }
+  day = new Date()
+  hourd = day.getHours()
+  // console.log("old: " + oldHour + " hournow: " + hourd)
+  
+}, 500);
