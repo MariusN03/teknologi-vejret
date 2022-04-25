@@ -4,12 +4,13 @@ let id
 let amount
 let points = 25
 
+
+
 function setup(){
+    noCanvas()
     amount = select('#points')
     let params = getURLParams()
     id = params.id
-    info = select('#info')
-    info.html('Mit id er ' + id)
     client = mqtt.connect('wss://mqtt.nextservices.dk')
     client.on('connect', (response)=>{
         console.log(response);
@@ -18,10 +19,10 @@ function setup(){
         client.subscribe('point')
 
         client.on('message', (topic, message) => {
-            info.html('<b>Modtog besked:</b> ' + message + ' <b>på emnet:</b> ' + topic)
             if (topic == "point"){
-                points = points + message
-                console.log(message);
+                tal = parseInt(message)
+                points = points + tal
+                console.log(tal);
             }
         })
     })
@@ -37,19 +38,19 @@ function setup(){
 
 function draw(){
     if (points <= 10){
-        document.getElementById('img-container').style.backgroundImage = "url('./assets/flower1.png')"
+        document.getElementById('img-container').style.backgroundImage = "url('./assets/1.png')"
     }
     else if(points > 10 && points <= 20){
-        document.getElementById('img-container').style.backgroundImage = "url('./assets/flower2.png')"
+        document.getElementById('img-container').style.backgroundImage = "url('./assets/2.png')"
     }
     else if(points > 20 && points <= 30){
-        document.getElementById('img-container').style.backgroundImage = "url('./assets/flower3.png')"
+        document.getElementById('img-container').style.backgroundImage = "url('./assets/3.png')"
     }
     else if(points > 30 && points <= 40){
-        document.getElementById('img-container').style.backgroundImage = "url('./assets/flower4.png')"
+        document.getElementById('img-container').style.backgroundImage = "url('./assets/4.png')"
     }
     else if(points > 40 && points <= 50){
-        document.getElementById('img-container').style.backgroundImage = "url('./assets/flower5.png')"
+        document.getElementById('img-container').style.backgroundImage = "url('./assets/5.png')"
     }
 
     else if (points > 50) {

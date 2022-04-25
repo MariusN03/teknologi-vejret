@@ -16,22 +16,23 @@ main{
 #container1{
     height: 100%;
     width: 100%;
-    background-color: red;
+    background-color: white;
     display: grid;
     place-items: center;
 }
 
 #img-container{
     transition: 1s all ease;
-    background-size: cover;
+    background-position: center;
+    background-size: contain;
     background-repeat: no-repeat;
     height: 300px;
     width: 300px;
 }
 
 button{
-    height: 30px;
-    width: 100px;
+    height: 20px;
+    width: 60px;
     margin: 10px;
 }
 
