@@ -149,6 +149,13 @@ client.on('message', function (topic, message) {
   }else if(topic=='point-server'){
     clients[0].points = clients[0].points + parseInt(message)
     
+    if(clients[0].points > 50){
+      clients[0].points = 50
+    }
+    if(clients[0].points < 0){
+      clients[0].points = 0
+    }
+
     console.log(clients)
     client.publish('point-app',String(clients[0].points))
     console.log('published: ' + clients[0].points)
@@ -189,5 +196,5 @@ setInterval(() => {
   day = new Date()
   hourd = day.getHours()
   // console.log("old: " + oldHour + " hournow: " + hourd)
-  
+
 }, 500);
