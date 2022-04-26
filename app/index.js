@@ -12,12 +12,13 @@ function setup(){
     client.on('connect', (response)=>{
         console.log(response);
         console.log('<b>Connected to nextblablabla.dk</b>')
-        client.publish("vejret-new", 'hej')
+        client.publish("vejret-new", id)
 
         client.subscribe('point-app')
 
         client.on('message', (topic, message) => {
             if (topic == "point-app"){
+
                 if(message > 50){
                     message = 50
                 }
@@ -27,7 +28,7 @@ function setup(){
                 }
                 
                 points = parseInt(message)
-                amount.html('Du har ' + message + ' points')
+                amount.html('Du har ' + message + ' point')
             }
         })
     })
