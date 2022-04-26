@@ -1,5 +1,17 @@
 var axios = require('axios');
 const mqtt = require('mqtt');
+
+const express = require('express')
+const app = express()
+const http = require('http')
+const server = http.createServer(app)
+
+app.use(express.static('public'))
+
+server.listen(4000, () => {
+  console.log('client available on on *:4000');
+})
+
 var dayAgo = 0
 let hur
 let status = 0
@@ -27,7 +39,7 @@ console.log(hour)
 
 let clients = [{
   "id": "42069",
-  "points": 10
+  "points": 20
 },];
 var data
 const dataFetch = () => {
@@ -145,7 +157,7 @@ client.on('message', function (topic, message) {
       })
       console.log(clients)
     }
-    
+    client.publish('point-app', String(clients[0].points))
   }else if(topic=='point-server'){
     clients[0].points = clients[0].points + parseInt(message)
     
