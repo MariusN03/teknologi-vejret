@@ -2,9 +2,6 @@ let client
 let info
 let id
 let amount
-let points = 25
-
-
 
 function setup(){
     noCanvas()
@@ -15,32 +12,32 @@ function setup(){
     client.on('connect', (response)=>{
         console.log(response);
         console.log('<b>Connected to nextblablabla.dk</b>')
+        client.publish("vejret-new", 'hej')
 
-        client.subscribe('point')
+        client.subscribe('point-app')
 
         client.on('message', (topic, message) => {
-            if (topic == "point"){
-                tal = parseInt(message)
-                points = points + tal
-                console.log(tal);
+            if (topic == "point-app"){
+                if(message > 50){
+                    message = 50
+                }
+                
+                if(message < 0){
+                    message = 0
+                }
+                
+                points = parseInt(message)
+                amount.html('Du har ' + message + ' points')
             }
         })
     })
-    
-    minus = () => {
-        points = points - 10
-    }
-
-    plus = () => {
-        points = points + 10
-    }
 }
 
 function draw(){
-    if (points <= 10){
+    if (points <= 5){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/1.png')"
     }
-    else if(points > 10 && points <= 20){
+    else if(points > 5 && points <= 20){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/2.png')"
     }
     else if(points > 20 && points <= 30){
@@ -61,5 +58,5 @@ function draw(){
         points = 0
     }
 
-    amount.html('Du har ' + points + ' points')
+    
 }
