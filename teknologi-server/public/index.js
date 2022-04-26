@@ -4,19 +4,23 @@ let id
 let amount
 
 function setup(){
+    console.log('setup running')
     noCanvas()
     amount = select('#points')
     let params = getURLParams()
     id = params.id
     client = mqtt.connect('wss://mqtt.nextservices.dk')
     client.on('connect', (response)=>{
-        console.log(response);
-        console.log('<b>Connected to nextblablabla.dk</b>')
+        console.log('connected to mqtt server')
+
+        //informer serveren om ny mqtt klient 
         client.publish("vejret-new", id)
 
         client.subscribe('point-app')
 
+        //subscribe på nye points
         client.on('message', (topic, message) => {
+            console.log('fik besked mqtt:'+ message + ' på emnet: ' + topic)
             if (topic == "point-app"){
 
                 if(message > 50){
