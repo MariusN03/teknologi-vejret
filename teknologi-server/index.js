@@ -119,6 +119,8 @@ client.on('connect', function () {
       client.publish('anbefaling',String(besked))
     }, 1500);
     
+    client.publish('point-app',String(clients[0].points))
+
 })
 
 
