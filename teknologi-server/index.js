@@ -124,6 +124,7 @@ client.on('connect', function () {
 
 
 client.subscribe('vejret-new')
+client.subscribe('point-server')
 
 client.on('message', function (topic, message) {
   // message is Buffer
@@ -143,6 +144,12 @@ client.on('message', function (topic, message) {
       console.log(clients)
     }
     
+  }else if(topic=='point-server'){
+    clients[0].points = clients[0].points + parseInt(message)
+    
+    console.log(clients)
+    client.publish('point-app',String(clients[0].points))
+    console.log('published: ' + clients[0].points)
   }
 })
 
