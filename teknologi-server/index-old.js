@@ -91,7 +91,7 @@ axios(config)
     }
     console.log("klokken "+ (24 - hour) + ": " + sumhour)
     let afvig = (sumhour-snit)/snit*100
-    console.log("lort" + (24-hour))
+    
     
     if(17 <= (24-hour) && (24-hour) <= 20){
       afvig = afvig - 100
@@ -200,6 +200,9 @@ setTimeout(() => {
 
 setInterval(() => {
   if(oldHour != hourd){
+    day = new Date()
+    hourd = day.getHours()
+    hour = 24 - day.getHours()
     dataFetch()
   
     setTimeout(() => {
