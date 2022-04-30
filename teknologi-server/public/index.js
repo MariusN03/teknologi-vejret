@@ -42,16 +42,16 @@ function draw(){
     if (points <= 5){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/1.png')"
     }
-    else if(points > 5 && points <= 20){
+    else if(points > 5 && points <= 15){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/2.png')"
     }
-    else if(points > 20 && points <= 30){
+    else if(points > 15 && points <= 25){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/3.png')"
     }
-    else if(points > 30 && points <= 40){
+    else if(points > 25 && points <= 35){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/4.png')"
     }
-    else if(points > 40 && points <= 50){
+    else if(points > 35 && points <= 50){
         document.getElementById('img-container').style.backgroundImage = "url('./assets/5.png')"
     }
 
